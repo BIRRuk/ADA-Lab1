@@ -12,7 +12,11 @@ pacman::p_load(readr, dplyr)
 1.  Import class one survey data from our Github site (<https://github.com/kijohnson/Advanced-Data-Analysis>) (The dataset is called ‘Class 1 Survey Fall 2025 2.csv’), calling the R dataframe that you create C1survey.
 
 ```{r}
-survey_df <- read_csv("https://github.com/kijohnson/Advanced-Data-Analysis/raw/refs/heads/main/Class%201%20Survey%20Fall%202025%202.csv")
+# load the csv file using readcsv from readr
+# the first line is used for direct loading from source git repository and the second line is for loading from a file saved on current path
+
+#survey_df <- read_csv("https://github.com/kijohnson/Advanced-Data-Analysis/raw/refs/heads/main/Class%201%20Survey%20Fall%202025%202.csv")
+survey_df <- read_csv("Class 1 Survey Fall 2025 2.csv")
 ```
 
 2.  Determine:
@@ -32,18 +36,22 @@ print(paste0("the number of variables are: ", dim(survey_df)[2]))
     a.  Rename the column variables to something shorter and that is descriptive of what the variable is about (for example like_dogs for the ‘Do you like dogs?’ question variable) and
     b.  Display that they are renamed. Hints: You can use either the rename_with function or the names function. The list of names for time is:
 
-`“id”, “like_cats”, “like_dogs”, “have_desert”, “slogan”, “fav_day”, “larkORowl”, “fav_food”, “fav_drink”, “fav_season”, “fav_month”, “hobby”, “program”, “specialization”, “stat_software”, “R_exp”, “coding_comfort”, “coding_length”, “top_three”, “public_health_interest”, “fav_num”, “bday”, “bmonth”, “country”, “state”, “city”, “highest_educ_level”`
-
 ```{r}
+# view origninal column names
+
 print(colnames(survey_df))
 ```
 
 ```{r}
+# rename the columns
 
 names(survey_df) <- c("id", "like_cats", "like_dogs", "have_desert", "slogan", "fav_day", "larkORowl", "fav_food", "fav_drink", "fav_season", "fav_month", "hobby", "program", "specialization", "stat_software", "R_exp", "coding_comfort", "coding_length", "top_three", "public_health_interest", "fav_num", "bday", "bmonth", "country", "state", "city",  "highest_educ_level")
 ```
 
 ```{r}
+# print renamed columns
+# the for loop is to print each name on a separate line
+
 for (colname in colnames(survey_df)) {
     print(colname)
 }
@@ -52,6 +60,8 @@ for (colname in colnames(survey_df)) {
 4.  Write code to determine and display the number of factor, integer, numerical, and character variables there are in the C1survey dataset. Suggestion: Try to ask ChatGPT for a solution if you are unsure. There is a really short answer to this but we want to see what students come up with!
 
 ```{r}
+# apply the type of function to each column and tally it up using the table function
+
 table(sapply(survey_df, typeof))
 ```
 
@@ -62,16 +72,27 @@ table(sapply(survey_df, typeof))
     c.  after you have cleaned up any unusual values, find the median bday and month. \*Note: please make sure that your bday and month variables are numeric before doing statistics
 
 ```{r}
+# convert the strings/characters to numeric which returns NA in cases of non nmeral strings.
+# this is passed to the table function to return frequencies.
+# we can see that there are few NAs, but there are no numbers outside the range of 1-31 for days and 1-11 for months
+
 table(as.numeric(survey_df$bday), useNA = 'ifany')
 ```
 
 ```{r}
+# hmm, there  are no december born valid values
 table(as.numeric(survey_df$bmonth), useNA = 'ifany')
-
 ```
 
 ```{r}
-c(median(as.numeric(survey_df$bday), na.rm = TRUE), median(as.numeric(survey_df$bmonth), na.rm = TRUE))
+# print formated medians, probably didn't need to do this
+
+medians = c(median(as.numeric(survey_df$bday), na.rm = TRUE), median(as.numeric(survey_df$bmonth), na.rm = TRUE))
+labels = c('birthdays', 'birthmonths')
+
+for (i in 1:length(medians)) {
+   print(paste('median of', labels[i], 'is', medians[i]))
+}
 ```
 
 6.  
@@ -92,12 +113,12 @@ survey_df2 <- survey_df %>% mutate(
 ```
 
 ```{r}
-tab <-table(survey_df2$bseason)
-tab
+seasons_table <-table(survey_df2$bseason)
+seasons_table
 ```
 
 ```{r}
-addmargins(tab)
+print(addmargins(seasons_table))
 ```
 
 7.  Pick your favorite variable or variables to analyze, come up with a question you want to answer with that variable or variables, generate the code, and provide an answer to your question. Describe what you did using comments (i.e. #’s).
