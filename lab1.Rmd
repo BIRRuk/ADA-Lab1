@@ -122,3 +122,18 @@ print(addmargins(seasons_table))
 ```
 
 7.  Pick your favorite variable or variables to analyze, come up with a question you want to answer with that variable or variables, generate the code, and provide an answer to your question. Describe what you did using comments (i.e. #’s).
+
+```{r}
+# Q is there any relationship between birth season and weather or not somebody is a cat person
+
+crosstab <- table(survey_df2$bseason, survey_df2$like_cats)#)
+crosstab_percent <- prop.table(crosstab, margin=1) * 100
+
+
+crosstab_percent
+```
+
+```{r}
+# outcome: there seems to be some difference within the groups with those born in the summer liking cat's the most and those born in the winter liking cats the least (69% vs 25%), but fisher's test shows the difference is not statistically significant
+fisher.test(crosstab)
+```
